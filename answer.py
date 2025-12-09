@@ -9,7 +9,6 @@ from ingest import *
 
 DB_NAME = str(Path(__file__).parent.parent / "local_vector_store")
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-MODEL = get_llm()
 
 SYSTEM_PROMPT = """
 You are a knowledgeable, friendly assistant.
@@ -22,7 +21,7 @@ Context:
 
 vectorstore = Chroma(persist_directory=DB_NAME, embedding_function=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
-llm = ChatOpenAI(temperature=0, model_name=MODEL)
+llm = get_llm()
 
 def fetch_context(question: str) -> list[Document]:
     return retriever.invoke(question)
