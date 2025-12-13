@@ -1,13 +1,14 @@
 from pathlib import Path
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.messages import SystemMessage, HumanMessage, convert_to_messages
 from langchain_core.documents import Document
-from ingest import *
+from model_config import *
 
-
-DB_NAME = str(Path(__file__).parent.parent / "local_vector_store")
+load_dotenv(override=True)
+DB_NAME = str(Path(__file__).parent / "local_vector_store")
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 SYSTEM_PROMPT = """
@@ -21,7 +22,7 @@ Context:
 
 vectorstore = Chroma(persist_directory=DB_NAME, embedding_function=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
-llm = get_llm()
+
 
 def fetch_context(question: str) -> list[Document]:
     return retriever.invoke(question)
@@ -32,7 +33,7 @@ def combined_question(question: str, history: list[dict] = []) -> str:
     return prior + "\n" + question
 
 
-def answer_question(question: str, history: list[dict] = []) -> str:
+def answer_question(question: str, llm, history: list[dict] = []) -> str:
     combined = combined_question(question, history)
     docs = fetch_context(combined)
     context = "\n\n".join(doc.page_content for doc in docs)
