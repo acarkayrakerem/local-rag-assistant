@@ -42,7 +42,7 @@ def create_embeddings(chunks):
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
     if os.path.exists(DB_NAME):
-        shutil.rmtree(DB_NAME)
+        Chroma(persist_directory=DB_NAME, embedding_function=embeddings).delete_collection()
 
     vectorstore = Chroma.from_documents(
         documents=chunks, embedding=embeddings, persist_directory=DB_NAME
@@ -50,8 +50,9 @@ def create_embeddings(chunks):
 
     return vectorstore
     
-
-if __name__ == "__main__":
-    docs = fetch_documents("test_DB")
+def vectorize_db(db_path: str):
+    yield f"Vectorizing:'{db_path}'... (this can take a while)"
+    docs = fetch_documents(db_path)
     chunks = create_chunks(docs)
     create_embeddings(chunks)
+    yield f"Done! Vector DB is created/updated."
