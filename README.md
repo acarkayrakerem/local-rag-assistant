@@ -11,8 +11,9 @@ documents you upload — including PDFs, Word files, text files, and more.
   needs to leave your machine.
 - 🧠 **Smart RAG Pipeline**: Built using **LangChain**, **ChromaDB**, and
   **Hugging Face embeddings** to understand your documents.
-- 🗂️ **Multi-Format Support**: Works with PDFs, Word docs (`.docx`), `.txt`,
-  `.md` and more.
+- 🗂️ **Multi-Format Support**: Works with PDFs (`.pdf`), Word docs (`.docx`,
+  `.doc`), Excel (`.xlsx`, `.xls`), Images (`.jpg`, `.png`), `.txt`, `.md`,
+  `.py`, `.json`, `.csv` and `.sql`.
 - 💬 **Gradio Web Interface**: Clean, easy-to-use chat interface running in your
   browser.
 - 📚 **Source Citations**: Tells you exactly which file the answer came from.
@@ -95,7 +96,7 @@ pip install -r requirements.txt
      `.` (dot)** next to it.
 3. **Vectorize**:
    - Click **"Vectorize The Database"**. This reads your files and creates the
-     "brain" for the AI. No need to do it again, unless you want to update the
+     "brain" for the AI. No need to do it again unless you want to update the
      database.
 4. **Chat**:
    - Ask questions like _"Who has an AWS certificate?"_ and get answers based on
