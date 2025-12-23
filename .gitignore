@@ -2,3 +2,5 @@
 .env
 *.pyc
 local_vector_store/
+test_DB/
+.DS_Store
