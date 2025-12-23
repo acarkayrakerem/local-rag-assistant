@@ -4,15 +4,18 @@ from answer import answer_question
 from model_config import ModelConfig, get_llm
 from ingest import vectorize_db
 
-def gradio_chat(message, history, provider, api_key, model_name):
-    if not provider:
-        raise gr.Error("Please select a provider.")
-    if not api_key:
+def gradio_chat(message, history, provider, api_key, model_name, reranker_feature):
+    if not api_key and provider != "ollama(free)":
         raise gr.Error("Please paste your API key.")
     
     config = ModelConfig(provider=provider, api_key=api_key, model_name=model_name or None)
     llm = get_llm(config)
-    reply = answer_question(message, llm=llm, history=history)
+
+    if reranker_feature:
+        reply = answer_question(message, llm=llm, history=history, reranker_feature=True)
+    else:
+        reply = answer_question(message, llm=llm, history=history)
+    
     return reply
 
 def reset_chat():
@@ -31,9 +34,10 @@ with gr.Blocks() as demo:
 
     with gr.Sidebar(position="left"):
         gr.Markdown("## Settings")
-        provider = gr.Radio(["openai", "google", "anthropic"], label="Provider", value="openai")
-        api_key = gr.Textbox(label="API key (It is only stored local, safe to paste)", type="password")
-        model = gr.Textbox(label="Model name (optional)", value="gpt-4.1-mini")
+        provider = gr.Radio(["openai", "google", "anthropic", "ollama(free)"], label="Provider", value="openai")
+        api_key = gr.Textbox(label="API key (It is only stored local and no need to paste for ollama)", type="password")
+        model = gr.Textbox(label="Model name (optional)")
+        reranker_feature = gr.Checkbox(label="Enable Reranker Feature (more precise but slightly slower)", value=False)
         db_path = gr.FileExplorer(
             label="Database",
             root_dir=str(Path.home()),
@@ -52,7 +56,7 @@ with gr.Blocks() as demo:
         chatbot=bot,
         type="messages",
         title="",
-        additional_inputs=[provider, api_key, model],
+        additional_inputs=[provider, api_key, model, reranker_feature],
     )
     reset_btn = gr.Button("Reset chat")
     reset_btn.click(fn=reset_chat, outputs=[bot, demo_chat.chatbot_state])

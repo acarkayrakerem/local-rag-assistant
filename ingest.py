@@ -2,25 +2,53 @@ import os
 import glob
 import shutil
 from pathlib import Path
+from langchain_community.document_loaders import (
+    TextLoader,
+    PyPDFLoader,
+    Docx2txtLoader,
+    UnstructuredExcelLoader,
+    UnstructuredImageLoader
+)
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 
 
-SUPPORTED_TEXT_EXTENSIONS = {
-    ".txt", ".md", ".mdx", ".py", ".json", ".csv", ".tsv", ".log", ".html", ".htm"
+LOADER_MAPPING = {
+    ".txt": (TextLoader, {"encoding": "utf-8"}),
+    ".md": (TextLoader, {"encoding": "utf-8"}),
+    ".py": (TextLoader, {"encoding": "utf-8"}),
+    ".json": (TextLoader, {"encoding": "utf-8"}),
+    ".csv": (TextLoader, {"encoding": "utf-8"}),
+    ".sql": (TextLoader, {"encoding": "utf-8"}),
+    ".pdf": (PyPDFLoader, {}),
+    ".docx": (Docx2txtLoader, {}),
+    ".doc": (Docx2txtLoader, {}),
+    ".xlsx": (UnstructuredExcelLoader, {}),
+    ".xls": (UnstructuredExcelLoader, {}),
+    ".jpg": (UnstructuredImageLoader, {}),
+    ".jpeg": (UnstructuredImageLoader, {}),
+    ".png": (UnstructuredImageLoader, {})
 }
+
+def get_loader_for_path(file_path:str):
+    ext = Path(file_path).suffix.lower()
+
+    if ext in LOADER_MAPPING:
+        loader_class, loader_args = LOADER_MAPPING[ext]
+        return loader_class(str(file_path), **loader_args)
+    return None
+
 
 def fetch_documents(root: str):
     documents = []
     
     for path in Path(root).rglob("*"):
-
-        if path.is_file() and path.suffix.lower() in SUPPORTED_TEXT_EXTENSIONS:
-            
+        
+        if path.is_file():
             try:
-                loader = TextLoader(str(path), encoding="utf-8")
+                loader = get_loader_for_path(str(path))
                 doc_list = loader.load()
                 
                 for doc in doc_list:
@@ -32,7 +60,7 @@ def fetch_documents(root: str):
     return documents
 
 def create_chunks(documents):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=300)
     chunks = text_splitter.split_documents(documents)
     return chunks
 
