@@ -1,98 +1,119 @@
-# Drive RAG Assistant
+# 🤖 Local Ollama RAG Assistant
 
-This application allows you to chat with your own documents (PDFs, Word docs,
-Text files, etc.) stored on your computer. It uses Artificial Intelligence to
-read your files and answer your questions based on their content.
+A fully local AI chatbot with a web-based interface, powered by
+**Retrieval-Augmented Generation (RAG)** and **Ollama**. This assistant runs
+completely offline (optional) and can answer your questions based on the
+documents you upload — including PDFs, Word files, text files, and more.
 
-## Features
+## ✨ Features
 
-- **Chat with your data**: Ask questions and get answers cited from your local
-  files.
-- **Privacy-focused**: Your documents stay on your computer.
-- **Flexible AI Options**: choice of OpenAI, Google, Anthropic, or completely
-  free/local AI with Ollama.
-- **User-Friendly Interface**: Simple web-based chat interface.
+- 🔒 **100% Local & Private**: Your documents stay on your computer. No data
+  needs to leave your machine.
+- 🧠 **Smart RAG Pipeline**: Built using **LangChain**, **ChromaDB**, and
+  **Hugging Face embeddings** to understand your documents.
+- 🗂️ **Multi-Format Support**: Works with PDFs, Word docs (`.docx`), `.txt`,
+  `.md` and more.
+- 💬 **Gradio Web Interface**: Clean, easy-to-use chat interface running in your
+  browser.
+- 📚 **Source Citations**: Tells you exactly which file the answer came from.
+- 🧪 **Test Data Included**: Comes with a `test_DB` of synthetic employee data
+  to try immediately.
 
-## Sample Data
+## 🛠️ Tech Stack
 
-The project includes a `test_DB` folder containing synthetic employee data
-generated using **Gemini 2.5 Flash**. You can use this folder to test the
-application immediately without needing your own documents.
+- **Ollama** (LLM backend, e.g., `llama3.2`)
+- **LangChain** (RAG framework)
+- **Chroma** (Persistent vector database)
+- **HuggingFace Embeddings** (Local embedding models)
+- **Gradio** (Frontend UI)
 
-## Application Structure
+---
 
-- `app.py`: The main application file that runs the user interface.
-- `ingest.py`: Handles reading your files and converting them into a format the
-  AI can understand ("vectorizing").
-- `answer.py`: The logic for finding the right documents and generating an
-  answer.
-- `model_config.py`: Manages connections to different AI providers (OpenAI,
-  Ollama, etc.).
+## 🚀 Getting Started
 
-## Prerequisites
+Follow these steps to set up the project from scratch.
 
-Before running the application, you need:
+### 1. Prerequisites
 
-1. **Python**: Ensure you have Python installed (version 3.10 or higher is
-   recommended).
-2. **Ollama (Optional)**: If you want to use the app for free without internet
-   dependencies, install [Ollama](https://ollama.com/) and download the Llama
-   3.2 model.
+- **Python 3.10+** installed on your system.
+- **Git** installed.
+- **Ollama** (for local/free mode).
 
-### Setting up Ollama (For Free/Local Use)
+### 2. Install and Setup Ollama
 
-1. Download and install Ollama from [ollama.com](https://ollama.com).
-   Alternatively, if you are on Mac, you can install it via Homebrew:
-   `brew install ollama`.
-2. Open your terminal or command prompt.
-3. Run the following command to download the model:
+1. Download and install **[Ollama](https://ollama.com)**.
+   - _Mac Users_: You can also run `brew install ollama`.
+2. Open your terminal and pull the model:
    ```bash
    ollama pull llama3.2:latest
    ```
-4. Keep the Ollama application running in the background while using this tool.
+3. **Keep Ollama Application running** in the background.
 
-## Installation
+### 3. Installation
 
-1. **Open Terminal**: Open your command prompt or terminal.
-2. **Navigate to the folder**: Use `cd` to go to the project directory.
-   ```bash
-   cd path/to/drive-rag-assistant
-   ```
-3. **Install Requirements**: Run the helper command to install all necessary
-   libraries.
-   ```bash
-   pip install -r requirements.txt
-   ```
+**Clone the repository:**
 
-## How to Run
+```bash
+git clone https://github.com/acarkayrakerem/local-rag-assistant.git
+cd local-rag-assistant
+```
 
-1. Start the application by running:
+**Create a Virtual Environment (Recommended):**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+```
+
+**Install Dependencies:**
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🏃‍♂️ How to Run
+
+1. **Start the app:**
    ```bash
    python app.py
    ```
-2. Wait for a message that says `Running on local URL: http://127.0.0.1:7860`.
-3. Open that link in your web browser.
+2. **Open in Browser:** You will see a message like
+   `Running on local URL: http://127.0.0.1:7860`. Click the link to open the
+   chat.
 
-## How to Use
+## 💡 How to Use
 
-1. **Select Provider**: On the left sidebar, choose your AI provider.
-   - **ollama(free)**: Select this if you followed the Ollama setup above. No
-     API key needed.
-   - **openai / google / anthropic**: Select one of these if you have a paid API
-     key. Enter your key in the "API key" box.
-2. **Select Database**: Click the file explorer in the sidebar to select the
-   folder containing your documents. **Important**: To select a folder, open it
-   and then click the folder icon with a `.` (dot) next to it.
-3. **Vectorize**: Click the "Vectorize The Database" button. This reads your
-   files and prepares them. You only need to do this once, or whenever you add
-   new files.
-4. **Chat**: Type your question in the main chat window and press Enter.
+1. **Select Provider**:
+   - Choose **`ollama(free)`** for unrelated local privacy.
+   - Or choose OpenAI/Google/Anthropic if you have an API key.
+2. **Select Database**:
+   - Click the 📁 File Explorer icon.
+   - Navigate to your document folder.
+   - **Important**: To select the current folder, click the **folder icon with a
+     `.` (dot)** next to it.
+3. **Vectorize**:
+   - Click **"Vectorize The Database"**. This reads your files and creates the
+     "brain" for the AI. No need to do it again, unless you want to update the
+     database.
+4. **Chat**:
+   - Ask questions like _"Who has an AWS certificate?"_ and get answers based on
+     your files!
 
-## Troubleshooting
+## 🧪 Sample Data
 
-- **"NameError: ChatOllama is not defined"**: Ensure you have installed the
-  requirements correctly.
-- **Ollama not working**: Make sure the Ollama app is running and you have
-  pulled the `llama3.2:latest` model.
-- **Dependencies errors**: If you see errors about missing modules, try running
-  `pip install -r requirements.txt` again.
+Included is a `test_DB` folder with synthetic employee records generated by
+**Gemini 2.5 Flash**. You can point the database selector to `test_DB` to test
+the app right away!
+
+---
+
+## ❓ Troubleshooting
+
+- **`NameError: ChatOllama is not defined`**: Run
+  `pip install -r requirements.txt` again to ensure all new dependencies are
+  installed.
+- **Ollama connection failed**: Ensure the Ollama app is running and you pulled
+  `llama3.2`.
+- **Missing files**: Check the allowed file types in `ingest.py`.
