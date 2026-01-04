@@ -2,10 +2,10 @@
 
 A fully local AI chatbot with a web-based interface, powered by
 **Retrieval-Augmented Generation (RAG)** and **Ollama**. This assistant runs
-completely offline (optional) and can answer your questions based on the
-documents you upload — including PDFs, Word files, text files, and more. You
-can get answers to your questions from very large datasets that are impossible
-to upload a frontier model and unsafe to share.
+completely offline (This is optional, you can paste your API key and use frontier models 
+as well) and can answer your questions based on the documents you upload, including PDFs, 
+Word files, text files, and more. You can get answers to your questions from very large 
+datasets that are impossible to upload a frontier model and unsafe to share.
 
 ## ✨ Features
 
