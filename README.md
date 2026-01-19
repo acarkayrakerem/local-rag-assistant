@@ -2,10 +2,11 @@
 
 A fully local AI chatbot with a web-based interface, powered by
 **Retrieval-Augmented Generation (RAG)** and **Ollama**. This assistant runs
-completely offline (This is optional, you can paste your API key and use frontier models 
-as well) and can answer your questions based on the documents you upload, including PDFs, 
-Word files, text files, and more. You can get answers to your questions from very large 
-datasets that are impossible to upload a frontier model and unsafe to share.
+completely offline (This is optional, you can paste your API key and use
+frontier models as well) and can answer your questions based on the documents
+you upload, including PDFs, Word files, text files, and more. You can get
+answers to your questions from very large datasets that are impossible to upload
+a frontier model and unsafe to share.
 
 ## ✨ Features
 
@@ -21,6 +22,8 @@ datasets that are impossible to upload a frontier model and unsafe to share.
 - 📚 **Source Citations**: Tells you exactly which file the answer came from.
 - 🧪 **Test Data Included**: Comes with a `test_DB` of synthetic employee data
   to try immediately.
+- 📊 **Built-in Evaluation**: Generate synthetic test questions (**SDG**) and
+  evaluate your RAG pipeline's accuracy automatically.
 
 ## 🛠️ Tech Stack
 
@@ -100,9 +103,13 @@ pip install -r requirements.txt
    - Click **"Vectorize The Database"**. This reads your files and creates the
      "brain" for the AI. No need to do it again unless you want to update the
      database.
-4. **Chat**:
    - Ask questions like _"Who has an AWS certificate?"_ and get answers based on
      your files!
+4. **Eval & SDG**:
+   - Switch to the **SDG & Testing** tab.
+   - **Generate Test Set**: Create synthetic question-answer pairs from your
+     documents.
+   - **Run Evaluation**: Test your model's accuracy against the synthetic data.
 
 ## 🧪 Sample Data
 
