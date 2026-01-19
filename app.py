@@ -102,39 +102,61 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="amber", secondary_hue="gray")) 
         <h2 style="text-align:center; margin: 0.5rem 0; font-weight: 800;">
             Local RAG Assistant Professional
         </h2>
-        """)
+    """)
+
+    with gr.Sidebar(position="left"):
+        gr.Markdown("## Settings")
+
+        provider = gr.Radio(
+            ["openai", "google", "anthropic", "ollama(free)"],
+            label="Provider",
+            value="openai"
+        )
+        api_key = gr.Textbox(label="API key", type="password")
+        model = gr.Textbox(label="Model name (optional)")
+        reranker_feature = gr.Checkbox(
+            label="Enable Reranker Feature",
+            value=False
+        )
+
+        gr.Markdown("---")
+
+        db_path = gr.FileExplorer(
+            label="Database Selection",
+            root_dir=str(Path.home()),
+            file_count="single",
+            ignore_glob="**/.?*",
+        )
+
+        ingest_btn = gr.Button("Vectorize Database", variant="primary")
+        ingest_status = gr.Markdown()
+        ingest_btn.click(
+            fn=vectorize_db,
+            inputs=[db_path],
+            outputs=[ingest_status]
+        )
 
     with gr.Tabs():
         with gr.Tab("Chat"):
-            with gr.Sidebar(position="left"):
-                gr.Markdown("## Settings")
-                provider = gr.Radio(["openai", "google", "anthropic", "ollama(free)"], label="Provider", value="openai")
-                api_key = gr.Textbox(label="API key", type="password")
-                model = gr.Textbox(label="Model name (optional)")
-                reranker_feature = gr.Checkbox(label="Enable Reranker Feature", value=False)
-                
-                gr.Markdown("---")
-                db_path = gr.FileExplorer(
-                    label="Database Selection",
-                    root_dir=str(Path.home()),
-                    file_count="single",
-                    ignore_glob="**/.?*",
-                )
-                ingest_btn = gr.Button("Vectorize Database", variant="primary")
-                ingest_status = gr.Markdown()
-                ingest_btn.click(fn=vectorize_db, inputs=[db_path], outputs=[ingest_status])
-
             bot = gr.Chatbot(type="messages")
-            
+
             demo_chat = gr.ChatInterface(
                 fn=gradio_chat,
                 chatbot=bot,
                 type="messages",
-                additional_inputs=[provider, api_key, model, reranker_feature],
+                additional_inputs=[
+                    provider,
+                    api_key,
+                    model,
+                    reranker_feature
+                ],
             )
-            
+
             reset_btn = gr.Button("Clear Conversation")
-            reset_btn.click(fn=reset_chat, outputs=[bot, demo_chat.chatbot_state])
+            reset_btn.click(
+                fn=reset_chat,
+                outputs=[bot, demo_chat.chatbot_state]
+            )
 
         with gr.Tab("SDG & Testing"):
             gr.Markdown("### 🛠 Synthetic Data Generation & Model Evaluation")
@@ -146,14 +168,29 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="amber", secondary_hue="gray")) 
                     gr.Markdown("#### 1. Generate Questions")
                     sdg_btn = gr.Button("Generate Test Set")
                     sdg_output = gr.Code(label="Synthetic Q&A", language="json")
-                    
+
                 with gr.Column():
                     gr.Markdown("#### 2. Run Accuracy Test")
-                    run_eval = gr.Button("Start Batch Evaluation", variant="primary")
-                    eval_output = gr.Code(label="Evaluation Results", language="json")
+                    run_eval = gr.Button(
+                        "Start Batch Evaluation",
+                        variant="primary"
+                    )
+                    eval_output = gr.Code(
+                        label="Evaluation Results",
+                        language="json"
+                    )
 
-            sdg_btn.click(fn=run_sdg_task, inputs=[provider, api_key, model], outputs=[sdg_output, sdg_state])
-            run_eval.click(fn=run_eval_task, inputs=[sdg_state, provider, api_key, model, reranker_feature], outputs=[eval_output])
+            sdg_btn.click(
+                fn=run_sdg_task,
+                inputs=[provider, api_key, model],
+                outputs=[sdg_output, sdg_state]
+            )
+
+            run_eval.click(
+                fn=run_eval_task,
+                inputs=[sdg_state, provider, api_key, model, reranker_feature],
+                outputs=[eval_output]
+            )
 
 if __name__ == "__main__":
     demo.launch()

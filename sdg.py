@@ -37,6 +37,9 @@ class SyntheticDataset(BaseModel):
 
 
 def fetch_random_context(n: int = 10) -> list:
+
+    if not Path(DB_NAME).exists():
+        raise ValueError("Vector store not found. Please click the 'Vectorize Database' button first.")
     vectorstore = Chroma(persist_directory=DB_NAME, embedding_function=embeddings)
     collection = vectorstore._collection
     all_ids = collection.get()['ids']
